@@ -1,31 +1,46 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
+
+// This awesome example is from @davedev. From his slide deck preso here:
+//
+// 	Read This URI >>
+// 	TODO: https://meetup.euggo.org/talks/objectively_harmful/objectively_harmful.slide#47
+
+type human struct {
+	name string
+}
+
+type wolf struct {
+	freq int
+}
+
+type greeter interface {
+	greeting(name string) string
+}
+
+func (h human) greeting(name string) string {
+	return fmt.Sprintf("Hello, %s. I'm %s.", name, h.name)
+}
+
+func (w wolf) greeting(string) string {
+	msg := strings.Repeat("woof ", w.freq)
+	return fmt.Sprintf("%s!", strings.TrimSpace(msg))
+}
+
+func meet(name string, gs ...greeter) {
+	for _, g := range gs {
+		fmt.Println(g.greeting(name))
+	}
+}
 
 func main() {
-	fmt.Printf("Sum: %d\n", sum(42, 42, 42, 96, 102, 3))
-
-	theNumbers := []int{42, 51, 23, 62, 102, 9, 23, 64}
-
-	sum, sentence := sumAndPresent(theNumbers,
-		"Hello, ", "cheeseheads", " of the world!")
-
-	fmt.Printf("Sum: %d\nSentence: %s", sum, sentence)
+	a := human{"Alice"}
+	b := wolf{6}
+	username := "Dan"
+	meet(username, a, b)
 }
 
-func sum(vals ...int) int {
-	total := 0
-	for _, val := range vals {
-		total += val
-	}
-	return total
-}
-
-func sumAndPresent(vals []int, words ...string) (int, string) {
-	total := sum(vals...)
-	sentences := "To say: "
-	for _, word := range words {
-		sentences += word
-	}
-	return total, sentences
-}
